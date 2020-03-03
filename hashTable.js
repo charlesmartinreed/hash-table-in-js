@@ -11,28 +11,42 @@ function hashStringToInt(s, tableSize) {
 }
 
 class HashTable {
-  table = new Array(100);
+  table = new Array(3);
 
   //   we create a hash function to convert a key into a number
 
   setItem = (key, value) => {
     // e.g person[firstName] = 'bob'
     const idx = hashStringToInt(key, this.table.length);
-    this.table[idx] = value;
+
+    // if already value at position...
+    if (this.table[idx]) {
+      this.table[idx].push([key, value]);
+    } else {
+      // we store as an array of key/value pairs to correct against collisions from our table not being appropriately sized
+      this.table[idx] = [[key, value]];
+    }
   };
 
   getItem = key => {
     const idx = hashStringToInt(key, this.table.length);
+    if (!this.table[idx]) {
+      return null;
+    }
 
     //   return the value for a given key
-    return this.table[idx];
+    return this.table[idx].find(x => x[0] === key)[1];
   };
 }
 
 const myTable = new HashTable();
 myTable.setItem("firstName", "bob");
-myTable.getItem("firstName");
 myTable.setItem("lastName", "jones");
+myTable.setItem("age", 32);
+myTable.setItem("dob", "3/5/87");
+console.log(myTable.table);
 
 console.log(myTable.getItem("firstName"));
 console.log(myTable.getItem("lastName"));
+console.log(myTable.getItem("age"));
+console.log(myTable.getItem("dob"));
